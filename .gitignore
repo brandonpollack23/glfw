@@ -82,3 +82,5 @@ tests/title
 tests/vulkan
 tests/windows
 
+# Bazel files
+bazel-*
