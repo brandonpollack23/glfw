@@ -3,13 +3,19 @@ package(
 )
 
 filegroup(
-    name = "glfw_deps",
-    srcs = glob(["deps/**/*.c", "deps/**/*.h"]),
-)
-
-filegroup(
     name = "glfw_src",
-    srcs = glob(["src/**/*.c", "src/**/*.h", "include/GLFW/*"]),
+    srcs = glob([
+          "src/**/*.c",
+          "src/**/*.h",
+          "include/GLFW/*"
+        ], exclude=[
+            "src/win32*", # TODO TOOLCHAIN/config win32 windows
+            "src/wgl*", # TODO TOOLCHAIN/config wgl windows
+            "src/mir*", #TODO TOOLCHAIN/CONFIG mir
+            "src/wl*", #TODO TOOLCHAIN/CONFIG wayland
+            "src/null*", #TODO TOOLCHAIN/CONFIG null window
+            "src/cocoa*", #TODO TOOLCHAIN/CONFIG OS X
+        ]),
 )
 
 filegroup(
@@ -18,13 +24,13 @@ filegroup(
 )
 
 filegroup(
-    name = "glfw_tests",
-    srcs = glob(["tests/*.c"]),
+    name = "glfw_source_files",
+    srcs = [":glfw_deps", ":glfw_src"]
 )
 
 filegroup(
-    name = "glfw_source_files",
-    srcs = [":glfw_deps", ":glfw_src", ":glfw_tests"]
+    name = "glfw_tests",
+    srcs = glob(["tests/*.c"]),
 )
 
 # TODO docs
@@ -41,7 +47,23 @@ cc_library(
         "_GLFW_X11",
         "_GLFW_HAS_XF86VM",
     ],
+    includes = ["include"],
     include_prefix = "GLFW",
     visibility = ["//visibility:public"],
+    deps = [
+        "//deps",
+        "//deps/vulkan",
+        #"//deps/vs2008", #TODO enable for windows with TOOLCHAIN
+        "//deps/mingw",
+        "//deps/glad",
+        "//deps/KHR",
+    ]
 )
 
+cc_test(
+    name = "glfw_test",
+    srcs = [":glfw_tests"],
+    deps = [
+        ":glfw",
+    ],
+)
