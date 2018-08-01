@@ -28,9 +28,13 @@ filegroup(
     srcs = [":glfw_deps", ":glfw_src"]
 )
 
+# TODO toolchain for other plats
 filegroup(
     name = "glfw_tests",
-    srcs = glob(["tests/*.c"]),
+    srcs = glob(["tests/*.c"], exclude=[
+            "tests/vulkan.c", # TODO TOOLCHAIN/config vulkan
+            "tests/windows.c", # TODO TOOLCHAIN/config windows
+        ]),
 )
 
 # TODO docs
@@ -60,10 +64,22 @@ cc_library(
     ]
 )
 
-cc_test(
-    name = "glfw_test",
-    srcs = [":glfw_tests"],
-    deps = [
-        ":glfw",
-    ],
-)
+# TODO test suite
+#cc_test(
+#    name = "glfw_test",
+#    srcs = [":glfw_tests"],
+#    deps = [
+#        ":glfw",
+#    ],
+#    defines = [
+#        "_GLFW_X11",
+#        "_GLFW_HAS_XF86VM",
+#    ],
+#    linkopts = [
+#        "-lpthread",
+#        "-lX11",
+#        "-lGL",
+#        "-ldl",
+#    ],
+#    visibility = ["//visibility:public"],
+#)
