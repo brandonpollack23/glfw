@@ -269,17 +269,24 @@ CMAKE_GENERATED_FILES = [
         "tests/Makefile",
 ]
 
-genrule(
-    name = "glfw_cmake",
-    cmd = "./$(location cmake) .",
-    outs = CMAKE_GENERATED_FILES,
-    tools = ["cmake"],
-)
+#genrule(
+#    name = "glfw_cmake",
+#    cmd = "./$(location cmake) .",
+#    outs = CMAKE_GENERATED_FILES,
+#    tools = ["cmake"],
+#)
+#
+#genrule(
+#    name = "glfw_build",
+#    cmd = "./$(location make)",
+#    outs = ["srcs/libglfw3.a"],
+#)
 
 genrule(
     name = "glfw_build",
-    cmd = "./$(location make)",
-    outs = ["srcs/libglfw3.a"],
+    srcs = glob(["**/*"], exclude=CMAKE_GENERATED_FILES),
+    cmd = "cmake . && make",
+    outs = ["srcs/libglfw3.a"] + CMAKE_GENERATED_FILES,
 )
 
 cc_library(
@@ -288,7 +295,7 @@ cc_library(
     include_prefix = "GLFW",
     visibility = ["//visibility:public"],
     deps = [
-        ":glfw_cmake",
+#        ":glfw_cmake",
         ":glfw_build"
     ]
 )
