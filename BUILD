@@ -1,5 +1,5 @@
 package(
-    default_visibility = ["//visibility:public"],
+    default_visibility = ["//visibility:private"],
 )
 
 CMAKE_GENERATED_FILES = [
@@ -277,7 +277,19 @@ genrule(
 )
 
 genrule(
-    name = "glfw",
+    name = "glfw_build",
     cmd = "./$(location make)",
-    outs = 
+    outs = ["srcs/libglfw3.a"],
 )
+
+cc_library(
+    name = "glfw3",
+    hdrs = ["include/GLFW/glfw3.h"],
+    include_prefix = "GLFW",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":glfw_cmake",
+        ":glfw_build"
+    ]
+)
+
